@@ -148,23 +148,18 @@ public class AppConfig {
         http.authorizeHttpRequests(authorize -> authorize
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
 
+                // Error endpoint - must be accessible
+                .requestMatchers("/error").permitAll()
+
+                // Authentication endpoints
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers(jwtConfig.getUrl()).permitAll()
                 .requestMatchers(jwtConfig.getRefreshUrl()).permitAll()
-                .requestMatchers("/api/v1/survey/**").permitAll()
-                .requestMatchers("/api/v1/farmer-selfie/**").permitAll()
-                .requestMatchers(("/api/v1/farmer-form/**")).permitAll()
-
                 .requestMatchers("/api/auth/v1/register/**").permitAll()
                 .requestMatchers("/api/v1/users/password/**").permitAll()
                 .requestMatchers("/api/users/**").permitAll()
 
-                .requestMatchers("/api/v1/exam/**").permitAll()
-
-                .requestMatchers("/api/completeProfile/getProfile/**").permitAll()
-                .requestMatchers("/api/v1/complete-profile/public/**").permitAll()
-                .requestMatchers("/api/v1/interests/**").authenticated()
-
+                // Swagger/OpenAPI endpoints
                 .requestMatchers(
                         "/v2/api-docs",
                         "/v3/api-docs",
@@ -178,21 +173,39 @@ public class AppConfig {
                         "/swagger-ui.html"
                 ).permitAll()
 
-                .requestMatchers("/api/public/**").permitAll()
-                .requestMatchers("/user/**").permitAll()
+                // Admin endpoints - must come before general /api/v1/** rules
+                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
+
+                // Attendance endpoints - must come before general /api/v1/** rules
+                .requestMatchers("/api/v1/attendance/**").authenticated()
+
+                // Documents endpoints - must come before general /api/v1/** rules
                 .requestMatchers("/api/v1/documents/uploadByUser").permitAll()
                 .requestMatchers("/api/v1/documents/**").authenticated()
+
+                // Interests endpoints - must come before general /api/v1/** rules
+                .requestMatchers("/api/v1/interests/**").authenticated()
+
+                // Public endpoints
+                .requestMatchers("/api/public/**").permitAll()
+                .requestMatchers("/user/**").permitAll()
+                .requestMatchers("/api/v1/survey/**").permitAll()
+                .requestMatchers("/api/v1/farmer-selfie/**").permitAll()
+                .requestMatchers(("/api/v1/farmer-form/**")).permitAll()
+                .requestMatchers("/api/v1/exam/**").permitAll()
+                .requestMatchers("/api/completeProfile/getProfile/**").permitAll()
+                .requestMatchers("/api/v1/complete-profile/public/**").permitAll()
                 .requestMatchers("/api/v1/employeeFarmerSurveys/**").permitAll()
-                .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                .requestMatchers("/api/v1/**").permitAll()
                 .requestMatchers("/api/v1/farmer_selfie_Survey/**").permitAll()
                 .requestMatchers("/api/v1/lab_report/**").permitAll()
                 .requestMatchers("/api/v1/products/**").permitAll()
                 .requestMatchers("/api/v1/company-weekly-off/**").permitAll()
-                .requestMatchers("/api/v1/attendance/**").permitAll()
                 .requestMatchers("/api/v1/product-photo/**").permitAll()
                 .requestMatchers("/api/v1/employees/**").permitAll()
                 .requestMatchers("/api/v1/emp-documents").permitAll()
+
+                // Catch-all for remaining /api/v1/** endpoints
+                .requestMatchers("/api/v1/**").permitAll()
 
                 .anyRequest().authenticated());
 

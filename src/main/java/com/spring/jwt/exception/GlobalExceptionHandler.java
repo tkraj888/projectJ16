@@ -1,6 +1,7 @@
 package com.spring.jwt.exception;
 
 import com.spring.jwt.dto.ErrorResponseDTO;
+import com.spring.jwt.utils.ApiResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.OptimisticLockingFailureException;
@@ -45,6 +46,14 @@ public class GlobalExceptionHandler {
         return buildResponse(HttpStatus.CONFLICT, "RESOURCE_ALREADY_EXISTS", ex.getMessage(), request);
     }
 
+    @ExceptionHandler(AttendanceException.class)
+    public ResponseEntity<ApiResponse<Void>> handleAttendanceException(AttendanceException ex) {
+        log.error("Attendance exception: {}", ex.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.BAD_REQUEST)
+                .body(ApiResponse.error(HttpStatus.BAD_REQUEST, ex.getMessage(), null));
+    }
     @ExceptionHandler(OptimisticLockingFailureException.class)
     public ResponseEntity<ErrorResponseDTO> handleOptimisticLockingFailureException(
             OptimisticLockingFailureException ex, HttpServletRequest request) {

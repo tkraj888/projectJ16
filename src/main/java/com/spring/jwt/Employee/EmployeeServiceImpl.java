@@ -220,14 +220,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Page<UserListResponseDTO> getUsers(String role, int page, int size) {
 
-        String finalRole = StringUtils.hasText(role)
-                ? role.toUpperCase()
-                : "USER";
-
         Pageable pageable = PageRequest.of(page, size, Sort.by("userId").descending());
 
-        Page<User> usersPage =
-                userRepository.findAllByRoleName(finalRole, pageable);
+        Page<User> usersPage;
+
+        if (StringUtils.hasText(role)) {
+            // If role is specified, filter by that role
+            String finalRole = role.toUpperCase();
+            usersPage = userRepository.findAllByRoleName(finalRole, pageable);
+        } else {
+            // If no role specified, get all employees (SURVEYOR, LAB_TECHNICIAN)
+            usersPage = userRepository.findAllEmployees(pageable);
+        }
 
         return usersPage.map(user ->
                 new UserListResponseDTO(
