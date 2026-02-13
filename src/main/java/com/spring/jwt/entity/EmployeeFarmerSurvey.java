@@ -3,6 +3,7 @@ package com.spring.jwt.entity;
 import com.spring.jwt.Enums.FormStatus;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.CreatedDate;
 
 import java.time.LocalDateTime;
@@ -88,5 +89,6 @@ public class EmployeeFarmerSurvey {
     private FormStatus formStatus;
     @CreatedDate
     @Column(nullable = false, updatable = false)
+    @CreationTimestamp
     private LocalDateTime createdAt;
 }
