@@ -38,4 +38,11 @@ public interface UserRepository extends JpaRepository<User, Long> {
             @Param("roleName") String roleName,
             Pageable pageable
     );
+
+    @Query("""
+        SELECT DISTINCT u FROM User u
+        JOIN u.roles r
+        WHERE r.name IN ('SURVEYOR', 'LAB_TECHNICIAN')
+    """)
+    Page<User> findAllEmployees(Pageable pageable);
 }

@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import java.time.LocalDate;
 
 @EnableScheduling
-@Component
+@Component("employeeAttendanceScheduler")
 @RequiredArgsConstructor
 public class AttendanceScheduler {
 

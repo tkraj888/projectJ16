@@ -13,15 +13,12 @@ public class EmployeeAttendanceDTO {
 
     private Long attendanceId;
 
-    @NotBlank(message = "Employee code is required")
     @Schema(example = "EMP-1001")
     private String employeeCode;
 
-    @NotBlank(message = "Employee name is required")
     @Schema(example = "Rahul Patil")
     private String employeeName;
 
-    @NotNull(message = "Attendance date is required")
     @Schema(example = "2026-01-11")
     private LocalDate date;
 
@@ -37,7 +34,6 @@ public class EmployeeAttendanceDTO {
 
     private Boolean attendanceStatusApproval;
 
-    @NotNull(message = "User ID is required")
     @Schema(example = "10005")
     private Long userId;
 }

@@ -198,7 +198,9 @@ public class EmployeeAttendanceServiceImpl
 
         EmployeeAttendance attendance =
                 attendanceRepository.findById(attendanceId)
-                        .orElseThrow();
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Attendance not found with ID: " + attendanceId));
 
         attendance.setAttendanceStatusApproval(true);
 
@@ -227,7 +229,9 @@ public class EmployeeAttendanceServiceImpl
 
         EmployeeAttendance attendance =
                 attendanceRepository.findById(attendanceId)
-                        .orElseThrow();
+                        .orElseThrow(() ->
+                                new ResourceNotFoundException(
+                                        "Attendance not found with ID: " + attendanceId));
 
         AttendanceStatus oldStatus =
                 attendance.getAttendanceStatus();
@@ -477,12 +481,34 @@ public class EmployeeAttendanceServiceImpl
                 attendanceRepository
                         .findByUser_UserIdAndDate(
                                 dto.getUserId(), dto.getDate())
-                        .orElse(new EmployeeAttendance());
+                        .orElse(null);
 
-        AttendanceStatus oldStatus =
-                attendance.getAttendanceStatus();
-        String oldReason =
-                attendance.getReason();
+        AttendanceStatus oldStatus = null;
+        String oldReason = null;
+
+        if (attendance == null) {
+            // Create new attendance record
+            User user = userRepository.findById(dto.getUserId())
+                    .orElseThrow(() ->
+                            new UserNotFoundExceptions(
+                                    "User not found with ID: " + dto.getUserId()));
+
+            Employee employee = employeeRepository.findByUser_UserId(dto.getUserId())
+                    .orElseThrow(() ->
+                            new ResourceNotFoundException(
+                                    "Employee record not found"));
+
+            String fullName = user.getFirstName() + " " + user.getLastName();
+
+            attendance = new EmployeeAttendance();
+            attendance.setUser(user);
+            attendance.setEmployeeCode(employee.getEmployeeCode());
+            attendance.setEmployeeName(fullName);
+            attendance.setDate(dto.getDate());
+        } else {
+            oldStatus = attendance.getAttendanceStatus();
+            oldReason = attendance.getReason();
+        }
 
         attendance.setAttendanceStatus(dto.getStatus());
         attendance.setReason(dto.getReason());

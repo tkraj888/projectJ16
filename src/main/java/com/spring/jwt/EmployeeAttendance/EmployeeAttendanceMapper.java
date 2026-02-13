@@ -5,7 +5,7 @@ import com.spring.jwt.entity.EmployeeAttendance;
 import com.spring.jwt.entity.User;
 import org.springframework.stereotype.Component;
 
-@Component
+@Component("employeeAttendanceMapper")
 public class EmployeeAttendanceMapper {
 
     public EmployeeAttendanceDTO toDto(EmployeeAttendance entity) {
