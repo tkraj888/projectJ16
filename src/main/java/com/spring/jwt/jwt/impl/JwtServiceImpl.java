@@ -1,7 +1,6 @@
 package com.spring.jwt.jwt.impl;
 
 import com.spring.jwt.exception.BaseException;
-import com.spring.jwt.exception.UnauthorizedException;
 import com.spring.jwt.jwt.JwtConfig;
 import com.spring.jwt.jwt.JwtService;
 import com.spring.jwt.jwt.TokenBlacklistService;
@@ -17,15 +16,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
-
-import javax.security.auth.login.AccountLockedException;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.security.MessageDigest;
@@ -42,7 +38,6 @@ public class JwtServiceImpl implements JwtService {
     private static final String CLAIM_KEY_TOKEN_TYPE = "token_type";
     private static final String TOKEN_TYPE_ACCESS = "access";
     private static final String TOKEN_TYPE_REFRESH = "refresh";
-
     private final UserRepository userRepository;
     private final JwtConfig jwtConfig;
     private final UserDetailsService userDetailsService;
@@ -128,9 +123,7 @@ public class JwtServiceImpl implements JwtService {
         if (userDetailsCustom.getUserProfileId() != null) {
             jwtBuilder.claim("userProfileId", userDetailsCustom.getUserProfileId());
         }
-        
 
-        
         jwtBuilder.claim(CLAIM_KEY_TOKEN_TYPE, TOKEN_TYPE_ACCESS)
                 .setIssuedAt(Date.from(now))
                 .setNotBefore(Date.from(notBefore))
